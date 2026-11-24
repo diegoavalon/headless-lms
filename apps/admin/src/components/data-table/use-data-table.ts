@@ -10,7 +10,12 @@ import type {
 } from "@tanstack/react-table";
 
 import type { ListParams } from "@/lib/api/types";
-import { FILTER_PREFIX, parseListParams, serializeSort } from "@/lib/table/parse-list-params";
+import {
+  FILTER_PREFIX,
+  type ListParamsDefaults,
+  parseListParams,
+  serializeSort,
+} from "@/lib/table/parse-list-params";
 
 /**
  * URL-backed table state. All server-affecting state (page, pageSize, search,
@@ -30,7 +35,7 @@ import { FILTER_PREFIX, parseListParams, serializeSort } from "@/lib/table/parse
  *  - search is debounced (250ms) so typing doesn't spam history or refetch;
  *  - column visibility is a per-user preference kept in localStorage, not URL.
  */
-export function useDataTable(opts?: { pageSize?: number; initialSort?: SortingState }) {
+export function useDataTable(opts?: Partial<ListParamsDefaults>) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -39,14 +44,16 @@ export function useDataTable(opts?: { pageSize?: number; initialSort?: SortingSt
   // array, so key it by its JSON to keep the params memo stable across renders.
   const pageSizeDefault = opts?.pageSize ?? 10;
   const initialSortKey = JSON.stringify(opts?.initialSort ?? []);
+  const literalFilters = opts?.literalFilters;
 
   const params: ListParams = useMemo(
     () =>
       parseListParams(searchParams, {
         pageSize: pageSizeDefault,
         initialSort: JSON.parse(initialSortKey) as SortingState,
+        literalFilters,
       }),
-    [searchParams, pageSizeDefault, initialSortKey],
+    [searchParams, pageSizeDefault, initialSortKey, literalFilters],
   );
 
   const filters = useMemo(() => params.filters ?? {}, [params.filters]);

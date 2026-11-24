@@ -5,6 +5,7 @@ import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import {
   Course,
+  CourseCategories,
   CourseIdParam,
   CourseSettings,
   CoursesPage,
@@ -37,6 +38,23 @@ export async function coursesRoutes(app: FastifyInstance, container: Container):
     handler: async (req) => {
       const actor = await resolveActor(container, req);
       return courses.listCourses(req.query, actor);
+    },
+  });
+
+  r.route({
+    method: 'GET',
+    url: '/api/courses/categories',
+    preHandler: app.requireOrgSession,
+    schema: {
+      operationId: 'listCourseCategories',
+      tags: ['Content'],
+      summary: 'List course categories',
+      description: 'Requires `courses:read`. Lists the categories used by courses the caller can read.',
+      response: { 200: CourseCategories, ...refusals(403) },
+    },
+    handler: async (req) => {
+      const actor = await resolveActor(container, req);
+      return courses.listCourseCategories(actor);
     },
   });
 

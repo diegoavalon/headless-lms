@@ -3033,6 +3033,53 @@ export type CreateCourseResponses = {
 
 export type CreateCourseResponse = CreateCourseResponses[keyof CreateCourseResponses];
 
+export type ListCourseCategoriesData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/courses/categories";
+};
+
+export type ListCourseCategoriesErrors = {
+  /**
+   * Default Response
+   */
+  401: {
+    error: string;
+    message?: string;
+    requestId?: string;
+  };
+  /**
+   * Default Response
+   */
+  403: {
+    error: string;
+    message?: string;
+    requestId?: string;
+  };
+  /**
+   * Default Response
+   */
+  500: {
+    error: string;
+    message?: string;
+    requestId?: string;
+  };
+};
+
+export type ListCourseCategoriesError =
+  ListCourseCategoriesErrors[keyof ListCourseCategoriesErrors];
+
+export type ListCourseCategoriesResponses = {
+  /**
+   * Default Response
+   */
+  200: Array<string>;
+};
+
+export type ListCourseCategoriesResponse =
+  ListCourseCategoriesResponses[keyof ListCourseCategoriesResponses];
+
 export type DeleteCourseData = {
   body?: never;
   path: {

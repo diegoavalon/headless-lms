@@ -15,18 +15,7 @@ import type { Course, ListParams } from "@/lib/api/types";
 import { coursesColumns } from "./courses-columns";
 import { CourseFormDialog } from "./_components/course-form-dialog";
 import { setCoursePublishedAction, deleteCourseAction } from "./actions";
-
-/** The eight fixed course categories, shared with the create/edit form sheet. */
-const CATEGORY_OPTIONS = [
-  "Design",
-  "Engineering",
-  "Product",
-  "Marketing",
-  "Data",
-  "Leadership",
-  "Finance",
-  "Operations",
-].map((c) => ({ label: c, value: c }));
+import { courseListDefaults } from "./list-params";
 
 /** Deep-equal on the small, JSON-safe `ListParams` shape (both sides built by
  *  the same `parseListParams`, so key order is stable). */
@@ -39,15 +28,21 @@ function CoursesTableInner({
   rows,
   total,
   params,
+  categories,
 }: {
   rows: Course[];
   total: number;
   params: ListParams;
+  categories: string[];
 }) {
   const router = useRouter();
   const permissions = usePermissions();
 
-  const table = useDataTable({ pageSize: params.pageSize, initialSort: params.sort });
+  const table = useDataTable({
+    ...courseListDefaults,
+    pageSize: params.pageSize,
+    initialSort: params.sort,
+  });
 
   // Navigation in flight: URL is ahead of the rows the server rendered.
   const isStale = !sameParams(table.params, params);
@@ -168,7 +163,8 @@ function CoursesTableInner({
           {
             columnId: "category",
             title: "Category",
-            options: CATEGORY_OPTIONS,
+            options: categories.map((name) => ({ label: name, value: name })),
+            single: true,
           },
         ]}
         emptyTitle="No courses yet"
@@ -187,7 +183,12 @@ function CoursesTableInner({
       />
 
       {/* Opened only via gated triggers (create button / Edit menu item). */}
-      <CourseFormDialog open={dialogOpen} onOpenChange={setDialogOpen} course={editing} />
+      <CourseFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        course={editing}
+        categories={categories}
+      />
 
       <ConfirmDialog
         open={toDelete !== null}
@@ -213,7 +214,12 @@ function CoursesTableInner({
   );
 }
 
-export function CoursesTable(props: { rows: Course[]; total: number; params: ListParams }) {
+export function CoursesTable(props: {
+  rows: Course[];
+  total: number;
+  params: ListParams;
+  categories: string[];
+}) {
   // `useDataTable` reads `useSearchParams()`, which requires a Suspense boundary.
   return (
     <Suspense fallback={null}>

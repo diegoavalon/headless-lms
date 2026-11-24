@@ -28,6 +28,7 @@ export interface ListParamsDefaults {
   pageSize: number;
   /** Default sort when `sort` is absent from the URL. */
   initialSort?: SortingState;
+  literalFilters?: readonly string[];
 }
 
 /**
@@ -106,7 +107,7 @@ export function parseListParams(
     const columnId = key.slice(FILTER_PREFIX.length);
     const values = g
       .getAll(key)
-      .flatMap((v) => v.split(","))
+      .flatMap((v) => (defaults.literalFilters?.includes(columnId) ? [v] : v.split(",")))
       .map((v) => v.trim())
       .filter(Boolean);
     if (values.length) filters[columnId] = values;

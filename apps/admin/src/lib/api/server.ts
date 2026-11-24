@@ -253,6 +253,9 @@ export const serverApi = {
   async listCourses(params: ListParams): Promise<Paginated<Course>> {
     return await Content.listCourses(toQuery(params, ["status", "category"]), await authHeaders());
   },
+  async listCourseCategories(): Promise<string[]> {
+    return await Content.listCourseCategories(await authHeaders());
+  },
   async getCourse(id: string): Promise<Course> {
     return await Content.getCourse({ id }, await authHeaders());
   },

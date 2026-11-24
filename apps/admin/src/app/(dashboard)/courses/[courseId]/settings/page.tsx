@@ -17,11 +17,14 @@ export default async function CourseSettingsTab({
   const { courseId } = await params;
   await requirePermission("courses:write", courseId);
 
-  const course = await serverApi.getCourse(courseId);
+  const [course, categories] = await Promise.all([
+    serverApi.getCourse(courseId),
+    serverApi.listCourseCategories(),
+  ]);
 
   return (
     <SettingsSurface>
-      <BasicsForm course={course} />
+      <BasicsForm course={course} categories={categories} />
       <ThumbnailField
         courseId={course.id}
         assetId={course.thumbnailAssetId}

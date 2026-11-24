@@ -212,6 +212,9 @@ const sortColumns: Record<string, AnyColumn | SQL> = {
   updatedAt: courses.updatedAt,
 };
 
+const courseCategory = sql<string>`btrim(${courses.category})`;
+const courseCategoryKey = sql<string>`lower(${courseCategory})`;
+
 const downloadSortColumns: Record<string, AnyColumn | SQL> = {
   title: downloads.title,
   slug: downloads.slug,
@@ -255,7 +258,7 @@ export class DrizzleContentRepository implements ContentRepository {
       conditions.push(eq(courses.status, query.status));
     }
     if (query.category) {
-      conditions.push(eq(courses.category, query.category));
+      conditions.push(eq(courseCategoryKey, sql`lower(btrim(${query.category}))`));
     }
 
     const search = query.search?.trim();
@@ -300,6 +303,25 @@ export class DrizzleContentRepository implements ContentRepository {
       page: query.page,
       pageSize: query.pageSize,
     };
+  }
+
+  async listCourseCategories(orgId: string, ids?: string[]): Promise<string[]> {
+    if (ids?.length === 0) {
+      return [];
+    }
+    const rows = await this.db
+      .select({ category: sql<string>`min(${courseCategory})` })
+      .from(courses)
+      .where(
+        and(
+          eq(courses.orgId, orgId),
+          sql`${courseCategory} <> ''`,
+          ids ? inArray(courses.id, ids) : undefined,
+        ),
+      )
+      .groupBy(courseCategoryKey)
+      .orderBy(courseCategoryKey);
+    return rows.map(({ category }) => category);
   }
 
   async findCourseById(orgId: string, id: string): Promise<Course | null> {
