@@ -108,8 +108,8 @@ Requires Node ≥22, pnpm 10, and Docker.
 
 ```bash
 pnpm install
-docker compose -f docker/docker-compose.yml up -d   # Postgres (:8005), SeaweedFS S3 (:8006), Hatchet (:8008/:8009)
 cp .env.example .env        # set BETTER_AUTH_SECRET (openssl rand -base64 32)
+docker compose --env-file .env -f docker/docker-compose.yml up -d
 pnpm db:generate && pnpm db:migrate
 pnpm dev                    # api :8000 · admin :8001 · student :8002
 ```

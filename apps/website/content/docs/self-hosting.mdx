@@ -17,9 +17,9 @@ To develop against the source, you'll need **Node ≥ 22**, **pnpm 10**, and **D
 
 ```bash
 pnpm install
-docker compose -f docker/docker-compose.yml up -d   # Postgres, SeaweedFS, Hatchet
 cp .env.example .env        # set BETTER_AUTH_SECRET and CREDENTIAL_STORE_KEY
                             # (openssl rand -base64 32 for each)
+docker compose --env-file .env -f docker/docker-compose.yml up -d
 pnpm db:generate && pnpm db:migrate
 pnpm dev                    # api :8000 · admin :8001 · student :8002
 ```
@@ -99,6 +99,8 @@ People sign in on an app's domain: the API trusts the domain of every app, besid
 - `:8002` — Student portal
 - `:8005` — Postgres · `:8006` — SeaweedFS (S3 API)
 - `:8008/:8009` — Hatchet (gRPC / dashboard)
+
+If another service uses a default port, set `POSTGRES_PORT` or `STORAGE_PORT` in the root `.env` before starting Compose. When changing the Postgres port, update `DATABASE_URL` and any `PUBSUB_DATABASE_URL` that points to the same database. When changing the SeaweedFS port, update any `STORAGE_PUBLIC_URL` that points directly to it.
 
 ## Behind a proxy
 
