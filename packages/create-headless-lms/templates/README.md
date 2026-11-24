@@ -4,7 +4,7 @@ A Headless LMS installation.
 
 ## Run
 
-    docker compose up -d      # if you chose the bundled Postgres/MinIO
+    docker compose up -d      # if you chose bundled Postgres or SeaweedFS
     pnpm install
     pnpm migrate
     pnpm dev                  # API on http://localhost:{{PORT}}, docs at /docs

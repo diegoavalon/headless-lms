@@ -4,13 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, Monitor, Moon, Sun } from "lucide-react";
 import { DropdownMenu } from "radix-ui";
-import { useTheme } from "next-themes";
 
 import { initials } from "@/lib/format";
 import { signOut } from "@/lib/auth/client";
+import { useTheme } from "@/lib/theme";
 import { SegmentedControl } from "@/components/primitives/segmented-control";
-
-type ThemeValue = "light" | "system" | "dark";
 
 /** Header avatar dropdown: profile identity, theme control, sign out. */
 export function UserMenu({ name, email }: { name: string; email: string }) {
@@ -55,7 +53,7 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
             <span className="text-[13px] text-ink-2">Theme</span>
             <SegmentedControl
               size="icon"
-              value={(theme ?? "system") as ThemeValue}
+              value={theme}
               onChange={setTheme}
               options={[
                 {

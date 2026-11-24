@@ -41,7 +41,7 @@ Headless LMS ships with a backend api, an admin portal and course builder and a 
 | **Push**                       | APNs, FCM and Web Push          | @headless-lms/adapter-push            |
 | **PubSub**                     | Postgres LISTEN/NOTIFY          | @headless-lms/adapter-pubsub-postgres |
 | **Content Builder & Renderer** | Plate.js builder and components |                                       |
-| **File & Media Storage**       | Minio (S3 compatible)           |                                       |
+| **File & Media Storage**       | SeaweedFS (S3 compatible)       |                                       |
 | **Logging**                    | Pino                            |                                       |
 
 ### Plugins
@@ -108,8 +108,8 @@ Requires Node ≥22, pnpm 10, and Docker.
 
 ```bash
 pnpm install
-docker compose -f docker/docker-compose.yml up -d   # Postgres (:8005) + MinIO (:8006/:8007)
 cp .env.example .env        # set BETTER_AUTH_SECRET (openssl rand -base64 32)
+docker compose --env-file .env -f docker/docker-compose.yml up -d
 pnpm db:generate && pnpm db:migrate
 pnpm dev                    # api :8000 · admin :8001 · student :8002
 ```

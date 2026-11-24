@@ -86,13 +86,13 @@ if (!args.yes) {
     await p.select({
       message: "File storage",
       options: [
-        { value: "minio", label: "Bundled MinIO via docker-compose (recommended)" },
+        { value: "seaweedfs", label: "Bundled SeaweedFS via Docker Compose (recommended)" },
         { value: "s3", label: "Existing S3-compatible storage" },
         { value: "skip", label: "Skip for now" },
       ],
     }),
   );
-  let storage: StorageAnswer = { mode: "minio" };
+  let storage: StorageAnswer = { mode: "seaweedfs" };
   if (storageMode === "skip") {
     storage = { mode: "skip" };
   }
@@ -155,7 +155,7 @@ if (!args.yes && got(await p.confirm({ message: "Run pnpm install now?", initial
 p.note(
   [
     `cd ${name}`,
-    ...(answers.db.mode === "docker" || answers.storage.mode === "minio"
+    ...(answers.db.mode === "docker" || answers.storage.mode === "seaweedfs"
       ? ["docker compose up -d"]
       : []),
     "pnpm install        # if you skipped it",

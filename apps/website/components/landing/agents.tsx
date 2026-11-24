@@ -10,7 +10,7 @@ const clients = [
   { icon: Bot, title: "AI agents", via: "MCP · OAuth", agent: true },
 ];
 
-const adapters = ["Resend · SES", "React Email", "MinIO · S3", "Hatchet"];
+const adapters = ["Resend · SES", "React Email", "SeaweedFS · S3", "Hatchet"];
 
 function Glass({ className, children }: { className?: string; children: React.ReactNode }) {
   return (

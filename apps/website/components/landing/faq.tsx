@@ -9,7 +9,7 @@ export const faqs = [
   },
   {
     q: "What do I need to run it?",
-    a: "Node and Postgres. The npm create headless-lms scaffolder can set up Postgres and MinIO for file storage with docker-compose, or point at ones you already run. Every adapter slot is optional, so you can start with nothing else configured.",
+    a: "Node and Postgres. The npm create headless-lms scaffolder can set up Postgres and SeaweedFS for file storage with Docker Compose, or use services you already run. Every adapter slot is optional, so you can start with nothing else configured.",
   },
   {
     q: "Do I have to use the admin and student apps?",
@@ -17,7 +17,7 @@ export const faqs = [
   },
   {
     q: "Can I swap the email or storage provider?",
-    a: "Yes. Email, templates, storage and workflows are adapters behind ports in the core. Use a shipped adapter such as Resend, SES, MinIO, S3 or Hatchet, or implement the port yourself.",
+    a: "Yes. Email, templates, storage and workflows are adapters behind ports in the core. Use a shipped adapter for Resend, SES, S3-compatible storage or Hatchet, or implement the port yourself.",
   },
   {
     q: "How do AI agents connect?",

@@ -1,9 +1,9 @@
 ---
-title: MinIO
-description: Store course assets in MinIO or any S3-compatible store with the storage-minio adapter.
+title: S3-compatible storage
+description: Store course assets in SeaweedFS or MinIO with the storage-minio adapter.
 ---
 
-`@headless-lms/adapter-storage-minio` implements the `ObjectStorage` port with [MinIO](https://min.io) — and works against any S3-compatible store. The bucket is private except its `public/` prefix, where the API publishes profile photos and the thumbnails and covers of published items for anyone to read; every other file goes through short-lived presigned URLs, so the browser uploads and downloads directly against the store without files passing through the API.
+`@headless-lms/adapter-storage-minio` implements the `ObjectStorage` port for SeaweedFS, MinIO, and other S3-compatible stores. The bucket is private except its `public/` prefix, where the API publishes profile photos and the thumbnails and covers of published items for anyone to read. Every other file goes through short-lived presigned URLs, so the browser uploads and downloads directly against the store.
 
 ## Setup
 
@@ -19,7 +19,9 @@ const container = await createContainer(config, {
 
 The adapter reads no environment itself — your installation parses env into a `MinioStorageConfig` and constructs it.
 
-For local development, the repo's docker compose file brings up MinIO on `:8006` (API) and `:8007` (console) alongside Postgres — see [self-hosting](/docs/self-hosting). The reference installation's defaults match that setup, so no storage env is needed locally.
+For local development, Docker Compose starts SeaweedFS with an S3 endpoint on `:8006`. The reference installation's defaults match that setup. See [self-hosting](/docs/self-hosting).
+
+When switching an existing checkout from the bundled MinIO service, copy any objects you want to keep into the same bucket and keys in SeaweedFS using an S3 client. SeaweedFS starts with a separate volume. Stop the old MinIO container before starting SeaweedFS on port `8006`.
 
 ## Environment variables
 

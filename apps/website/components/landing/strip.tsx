@@ -26,7 +26,7 @@ const items = [
   [Webhook, "Signed webhooks"],
   [Plug, "Plugins"],
   [Database, "Postgres"],
-  [HardDrive, "S3 · MinIO"],
+  [HardDrive, "S3 · SeaweedFS"],
   [Mail, "Resend · SES"],
   [Workflow, "Hatchet workflows"],
   [ShieldCheck, "Better Auth"],

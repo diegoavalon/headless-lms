@@ -13,11 +13,17 @@
    shadcn primitives inherit the design.
 
    Theming: light values live on :root, dark overrides on `.dark` (applied to
-   <html> by next-themes; system-preference by default). Components style with
+   <html> by the theme preference). Components style with
    tokens, so most need no `dark:` variants.
    ========================================================================= */
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+.theme-changing *,
+.theme-changing *::before,
+.theme-changing *::after {
+  transition: none !important;
+}
 
 :root {
   color-scheme: light;
