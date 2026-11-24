@@ -4,6 +4,13 @@ packages:
   - "plugins/*"
   - "adapters/*"
 
+allowBuilds:
+  "@hatchet-dev/typescript-sdk": true
+  esbuild: true
+  protobufjs: true
+  sharp: false
+  unrs-resolver: true
+
 # `@hookform/resolvers` declares no `zod` dependency at all — only
 # `react-hook-form` — so pnpm links no zod into its isolated store entry and the
 # `zod/v3` + `zod/v4/core` type imports in `zod/dist/index.d.ts` resolve by
