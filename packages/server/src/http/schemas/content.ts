@@ -48,5 +48,7 @@ export type CoursesQuery = z.infer<typeof CoursesQuery>;
 export const CoursesPage = paginated(Course);
 export type CoursesPage = z.infer<typeof CoursesPage>;
 
+export const CourseCategories = z.array(z.string());
+
 export const CourseIdParam = z.object({ id: z.string() });
 export type CourseIdParam = z.infer<typeof CourseIdParam>;

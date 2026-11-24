@@ -159,6 +159,7 @@ export interface CommunitiesService extends CommunityReader {
 
 export interface CourseManagementService {
   listCourses(query: ListCoursesQuery, actor: Actor): Promise<Page<CourseView>>;
+  listCourseCategories(actor: Actor): Promise<string[]>;
   getCourse(id: string, actor: Actor): Promise<CourseView>;
   findCourse(id: string, actor: Actor): Promise<CourseView | null>;
   createCourse(input: CreateCourseInput, actor: Actor): Promise<CourseView>;
@@ -287,6 +288,7 @@ export interface BundlesService {
 
 export interface ContentRepository {
   listCourses(orgId: string, query: ListCoursesQuery, ids?: string[]): Promise<Page<Course>>;
+  listCourseCategories(orgId: string, ids?: string[]): Promise<string[]>;
   findCourseById(orgId: string, id: string): Promise<Course | null>;
   createCourse(orgId: string, input: CreateCourseInput, slug: string): Promise<Course>;
   updateCourse(orgId: string, id: string, patch: UpdateCourseInput): Promise<Course | null>;

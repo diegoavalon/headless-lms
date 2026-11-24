@@ -9,32 +9,15 @@ import { FormDialog } from "@/components/forms/form-dialog";
 import { Field } from "@/components/forms/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
 
 import { createCourseAction, updateCourseAction } from "../actions";
 import type { Course } from "@/lib/api/types";
-
-const CATEGORIES = [
-  "Design",
-  "Engineering",
-  "Product",
-  "Marketing",
-  "Data",
-  "Leadership",
-  "Finance",
-  "Operations",
-] as const;
+import { CATEGORY_MAX_LENGTH, CourseCategoryField } from "./course-category-field";
 
 const schema = z.object({
   title: z.string().trim().min(1, "Title is required").max(120, "Keep it under 120 characters"),
-  category: z.string().min(1, "Pick a category"),
+  category: z.string().trim().min(1, "Pick a category").max(CATEGORY_MAX_LENGTH),
   description: z.string().trim().max(600, "Keep it under 600 characters").optional(),
 });
 
@@ -46,11 +29,13 @@ export function CourseFormDialog({
   open,
   onOpenChange,
   course,
+  categories,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /** Present = edit mode; absent = create mode. */
   course?: Course;
+  categories: string[];
 }) {
   const isEdit = Boolean(course);
   const [pending, startTransition] = useTransition();
@@ -132,25 +117,14 @@ export function CourseFormDialog({
           />
         </Field>
 
-        <Field id="category" label="Category" required error={errors.category?.message}>
-          <Select
-            value={category || undefined}
-            onValueChange={(v) =>
-              setValue("category", v, { shouldValidate: true, shouldDirty: true })
-            }
-          >
-            <SelectTrigger id="category" aria-invalid={Boolean(errors.category)}>
-              <SelectValue placeholder="Select a category" />
-            </SelectTrigger>
-            <SelectContent>
-              {CATEGORIES.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
+        <CourseCategoryField
+          categories={categories}
+          value={category}
+          error={errors.category?.message}
+          onValueChange={(name) =>
+            setValue("category", name, { shouldValidate: true, shouldDirty: true })
+          }
+        />
 
         <Field
           id="description"

@@ -43,6 +43,7 @@ export function Combobox({
   placeholder = "Select an option",
   searchPlaceholder = "Search…",
   emptyText = "No matches",
+  createOption,
   disabled,
   className,
   "aria-invalid": ariaInvalid,
@@ -54,6 +55,7 @@ export function Combobox({
   placeholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
+  createOption?: (query: string) => ComboboxOption | undefined;
   disabled?: boolean;
   className?: string;
   "aria-invalid"?: boolean;
@@ -62,11 +64,23 @@ export function Combobox({
   const [query, setQuery] = useState("");
 
   const selected = options.find((o) => o.value === value);
+  const newOption = createOption?.(query.trim());
+
+  function select(next: string) {
+    onValueChange(next);
+    setOpen(false);
+    setQuery("");
+  }
 
   const { groups, hidden } = useMemo(() => {
-    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const search = query.trim().toLowerCase();
+    const terms = search.split(/\s+/).filter(Boolean);
     const found = terms.length === 0 ? options : options.filter((o) => matches(o, terms));
-    const visible = found.slice(0, MAX_VISIBLE);
+    const exact = createOption && search && found.find((o) => o.label.toLowerCase() === search);
+    const visible = (exact ? [exact, ...found.filter((o) => o !== exact)] : found).slice(
+      0,
+      MAX_VISIBLE,
+    );
 
     const byGroup = new Map<string, ComboboxOption[]>();
     for (const option of visible) {
@@ -76,7 +90,7 @@ export function Combobox({
       else byGroup.set(key, [option]);
     }
     return { groups: [...byGroup], hidden: found.length - visible.length };
-  }, [options, query]);
+  }, [options, query, createOption]);
 
   return (
     // `modal` so the listbox stays interactive inside a dialog's focus trap.
@@ -124,11 +138,7 @@ export function Combobox({
                   <CommandItem
                     key={option.value}
                     value={option.value}
-                    onSelect={() => {
-                      onValueChange(option.value);
-                      setOpen(false);
-                      setQuery("");
-                    }}
+                    onSelect={() => select(option.value)}
                   >
                     <span className="min-w-0 flex-1">
                       <span className="block truncate">{option.label}</span>
@@ -145,6 +155,16 @@ export function Combobox({
                 ))}
               </CommandGroup>
             ))}
+            {newOption && (
+              <CommandGroup>
+                <CommandItem
+                  value={newOption.value}
+                  onSelect={() => select(newOption.value)}
+                >
+                  <span className="wrap-anywhere">{newOption.label}</span>
+                </CommandItem>
+              </CommandGroup>
+            )}
           </CommandList>
           {hidden > 0 ? (
             <p className="border-t border-line px-3 py-2 text-xs text-ink-4">

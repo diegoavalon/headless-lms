@@ -46,6 +46,7 @@ function makeCourse(over: Partial<Course> = {}): Course {
 function makeRepo(): ContentRepository {
   return {
     listCourses: vi.fn(),
+    listCourseCategories: vi.fn(),
     findCourseById: vi.fn(),
     createCourse: vi.fn(),
     updateCourse: vi.fn(),
@@ -1836,6 +1837,7 @@ describe('permissions', () => {
     const nobody = actorWith({ orgId: 'org1' });
     const methods = [
       'listCourses',
+      'listCourseCategories',
       'getCourse',
       'findCourse',
       'createCourse',
@@ -1933,6 +1935,19 @@ describe('permissions', () => {
     expect(vi.mocked(repo.listCourses).mock.calls).toEqual([
       ['org1', { page: 1, pageSize: 20 }, ['crs_1']],
       ['org1', { page: 1, pageSize: 20 }, undefined],
+    ]);
+  });
+
+  it('lists categories with the same organization and course scope as the course list', async () => {
+    const repo = makeRepo();
+    vi.mocked(repo.listCourseCategories).mockResolvedValue(['Compliance']);
+    const { svc } = build(repo);
+
+    await expect(svc.listCourseCategories(JAMES)).resolves.toEqual(['Compliance']);
+    await svc.listCourseCategories(ownerIn('org2'));
+    expect(vi.mocked(repo.listCourseCategories).mock.calls).toEqual([
+      ['org1', ['crs_1']],
+      ['org2', undefined],
     ]);
   });
 

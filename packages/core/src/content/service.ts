@@ -412,6 +412,11 @@ export class ContentService
     return this.pageWithThumbnails(await this.repo.listCourses(actor.orgId, query, ids));
   }
 
+  async listCourseCategories(actor: Actor): Promise<string[]> {
+    const ids = this.visibleIds(actor, ['courses:read'], 'courses');
+    return this.repo.listCourseCategories(actor.orgId, ids);
+  }
+
   async getCourse(id: string, actor: Actor): Promise<CourseView> {
     const course = await this.findCourse(id, actor);
     if (!course) {

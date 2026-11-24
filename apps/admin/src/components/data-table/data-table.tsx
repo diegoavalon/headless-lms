@@ -35,6 +35,7 @@ export interface FacetConfig {
   columnId: string;
   title: string;
   options: FacetOption[];
+  single?: boolean;
 }
 
 export interface DataTableProps<TData> {
@@ -168,7 +169,13 @@ export function DataTable<TData>({
             const column = table.getColumn(f.columnId);
             if (!column) return null;
             return (
-              <FacetedFilter key={f.columnId} column={column} title={f.title} options={f.options} />
+              <FacetedFilter
+                key={f.columnId}
+                column={column}
+                title={f.title}
+                options={f.options}
+                single={f.single}
+              />
             );
           })}
           {filtered && (

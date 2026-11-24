@@ -4,6 +4,7 @@
   "pages": [
     "listCourses",
     "createCourse",
+    "listCourseCategories",
     "getCourse",
     "updateCourse",
     "deleteCourse",

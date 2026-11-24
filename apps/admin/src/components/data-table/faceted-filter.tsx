@@ -19,10 +19,12 @@ export function FacetedFilter<TData, TValue>({
   column,
   title,
   options,
+  single = false,
 }: {
   column?: Column<TData, TValue>;
   title: string;
   options: FacetOption[];
+  single?: boolean;
 }) {
   const selected = new Set((column?.getFilterValue() as string[]) ?? []);
 
@@ -47,7 +49,12 @@ export function FacetedFilter<TData, TValue>({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-52 p-1" align="start">
-        <div role="listbox" aria-label={title} className="flex flex-col">
+        <div
+          role="listbox"
+          aria-label={title}
+          aria-multiselectable={!single}
+          className="flex max-h-64 flex-col overflow-y-auto"
+        >
           {options.map((option) => {
             const isSelected = selected.has(option.value);
             return (
@@ -57,6 +64,10 @@ export function FacetedFilter<TData, TValue>({
                 role="option"
                 aria-selected={isSelected}
                 onClick={() => {
+                  if (single) {
+                    column?.setFilterValue(isSelected ? undefined : [option.value]);
+                    return;
+                  }
                   const next = new Set(selected);
                   if (isSelected) next.delete(option.value);
                   else next.add(option.value);

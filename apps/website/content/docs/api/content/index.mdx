@@ -8,6 +8,7 @@ description: 'Authored content: courses and downloads, their structure and deliv
 <Cards>
 <Card href="/docs/api/content/listCourses" title="List courses" description="Requires `courses:read`. Every course in the organization, drafts included, filtered by status and category and searched by title." />
 <Card href="/docs/api/content/createCourse" title="Create a course" description="Requires `courses:write`. The course starts as a draft. 409 when its slug is taken." />
+<Card href="/docs/api/content/listCourseCategories" title="List course categories" description="Requires `courses:read`. Lists the categories used by courses the caller can read." />
 <Card href="/docs/api/content/getCourse" title="Get a course" description="Requires `courses:read`." />
 <Card href="/docs/api/content/updateCourse" title="Update a course" description="Requires `courses:write`. Changes only the fields sent. `thumbnailAssetId` must be a ready library image (409 otherwise); null clears it. A file it does not already use must be uploaded for it, or the caller needs `media:read` (403 otherwise)." />
 <Card href="/docs/api/content/deleteCourse" title="Delete a course" description="Requires `courses:delete`." />

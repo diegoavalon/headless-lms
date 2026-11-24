@@ -334,6 +334,8 @@ import type {
   ListConnectedAppsResponses,
   ListConnectionsErrors,
   ListConnectionsResponses,
+  ListCourseCategoriesErrors,
+  ListCourseCategoriesResponses,
   ListCourseLearnersErrors,
   ListCourseLearnersResponses,
   ListCoursesErrors,
@@ -2524,6 +2526,31 @@ export class Content {
         ...options?.headers,
         ...params.headers,
       },
+    });
+  }
+
+  /**
+   * List course categories
+   *
+   * Requires `courses:read`. Lists the categories used by courses the caller can read.
+   */
+  public static listCourseCategories<ThrowOnError extends boolean = false>(
+    options?: Options<never, ThrowOnError>,
+  ): RequestResult<
+    ListCourseCategoriesResponses,
+    ListCourseCategoriesErrors,
+    ThrowOnError,
+    "data"
+  > {
+    return (options?.client ?? client).get<
+      ListCourseCategoriesResponses,
+      ListCourseCategoriesErrors,
+      ThrowOnError,
+      "data"
+    >({
+      responseStyle: "data",
+      url: "/api/courses/categories",
+      ...options,
     });
   }
 
