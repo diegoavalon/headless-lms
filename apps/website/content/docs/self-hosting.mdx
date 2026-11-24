@@ -13,11 +13,11 @@ npm create headless-lms
 
 ## Run the repo locally
 
-To develop against the source, you'll need **Node ≥ 22**, **pnpm 10**, and **Docker**. The following brings up Postgres, MinIO and Hatchet, applies migrations, and starts the api, admin and student apps.
+To develop against the source, you'll need **Node ≥ 22**, **pnpm 10**, and **Docker**. The following brings up Postgres, SeaweedFS and Hatchet, applies migrations, and starts the api, admin and student apps.
 
 ```bash
 pnpm install
-docker compose -f docker/docker-compose.yml up -d   # Postgres, MinIO, Hatchet
+docker compose -f docker/docker-compose.yml up -d   # Postgres, SeaweedFS, Hatchet
 cp .env.example .env        # set BETTER_AUTH_SECRET and CREDENTIAL_STORE_KEY
                             # (openssl rand -base64 32 for each)
 pnpm db:generate && pnpm db:migrate
@@ -97,7 +97,7 @@ People sign in on an app's domain: the API trusts the domain of every app, besid
 - `:8000` — API
 - `:8001` — Admin dashboard
 - `:8002` — Student portal
-- `:8005` — Postgres · `:8006/:8007` — MinIO (API / console)
+- `:8005` — Postgres · `:8006` — SeaweedFS (S3 API)
 - `:8008/:8009` — Hatchet (gRPC / dashboard)
 
 ## Behind a proxy

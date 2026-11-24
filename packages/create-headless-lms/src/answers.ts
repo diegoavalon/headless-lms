@@ -1,6 +1,6 @@
 export type DbAnswer = { mode: "docker" } | { mode: "url"; url: string };
 export type StorageAnswer =
-  | { mode: "minio" }
+  | { mode: "seaweedfs" }
   | {
       mode: "s3";
       endPoint: string;
@@ -25,7 +25,7 @@ export function defaultAnswers(name: string): Answers {
   return {
     name,
     db: { mode: "docker" },
-    storage: { mode: "minio" },
+    storage: { mode: "seaweedfs" },
     port: 8000,
     clientOrigins: "http://localhost:8001",
   };

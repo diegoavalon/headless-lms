@@ -17,5 +17,5 @@ pnpm --filter @headless-lms/api dev          # tsx watch, reads root .env
 pnpm --filter @headless-lms/api db:migrate   # headless-lms CLI via tsx
 ```
 
-Needs Postgres + MinIO: `docker compose -f docker/docker-compose.yml up -d`.
+Start Postgres and SeaweedFS with `docker compose -f docker/docker-compose.yml up -d`.
 OpenAPI docs at `http://localhost:8000/docs`.

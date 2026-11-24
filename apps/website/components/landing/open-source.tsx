@@ -6,7 +6,7 @@ const transcript = [
   ["┌", "create-headless-lms"],
   ["◇", "Project name · my-lms"],
   ["◇", "Database · Postgres via docker-compose"],
-  ["◇", "File storage · Bundled MinIO via docker-compose"],
+  ["◇", "File storage · SeaweedFS via Docker Compose"],
   ["◇", "API port · 8000"],
   ["◇", "Created my-lms/"],
   ["└", "API will listen on http://localhost:8000 — docs at /docs"],
@@ -15,7 +15,7 @@ const transcript = [
 const slots = [
   { slot: "Email", options: ["Resend", "SES"] },
   { slot: "Templates", options: ["React Email"] },
-  { slot: "Storage", options: ["MinIO", "S3"] },
+  { slot: "Storage", options: ["SeaweedFS", "S3"] },
   { slot: "Workflows", options: ["Hatchet", "Inline"] },
 ];
 
@@ -33,7 +33,7 @@ export function OpenSource() {
           className="lg:col-span-6"
           icon={Terminal}
           title="One command to a running LMS"
-          body="The scaffolder creates a standalone installation that owns its config and plugins, with Postgres and MinIO in docker-compose if you want them."
+          body="The scaffolder creates a standalone installation that owns its config and plugins, with optional Postgres and SeaweedFS services in Docker Compose."
           painting="golden"
           focus="50% 60%"
           href="/docs/self-hosting"

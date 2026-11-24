@@ -53,14 +53,18 @@ describe("scaffold", () => {
     expect(example).toMatch(/^CREDENTIAL_STORE_KEY=$/m);
   });
 
-  it("docker db answer produces matching DATABASE_URL and compose service", async () => {
+  it("configures Postgres and SeaweedFS to match the generated environment", async () => {
     const target = join(await scratch(), "my-lms");
     await scaffold(defaultAnswers("my-lms"), target);
     const env = await readFile(join(target, ".env"), "utf8");
     expect(env).toContain("DATABASE_URL=postgres://postgres:postgres@localhost:8005/my_lms");
+    expect(env).toContain("STORAGE_PORT=8006");
+    expect(env).toContain("STORAGE_BUCKET=headless-lms");
     const compose = await readFile(join(target, "docker-compose.yml"), "utf8");
     expect(compose).toContain("postgres:17");
-    expect(compose).toContain("minio/minio");
+    expect(compose).toContain("image: chrislusf/seaweedfs:4.55");
+    expect(compose).toContain('"8006:8333"');
+    expect(compose).toContain("seaweedfs-data:/data");
   });
 
   it("url db + skip storage: no compose file, no STORAGE_ vars", async () => {
@@ -101,6 +105,8 @@ describe("scaffold", () => {
     expect(example).toMatch(/^STORAGE_SECRET_KEY=$/m);
     expect(example).not.toContain("AKIAREALLOOKINGACCESSKEY");
     expect(example).not.toContain("wJalrXUtnFEMIrealLookingSecretKeyEXAMPLE");
+    const compose = await readFile(join(target, "docker-compose.yml"), "utf8");
+    expect(compose).not.toContain("seaweedfs");
   });
 
   it("writes resolved dependency ranges, defaulting to the latest dist-tag", async () => {

@@ -30,26 +30,31 @@ const POSTGRES_SERVICE = `  postgres:
     volumes:
       - pgdata:/var/lib/postgresql/data`;
 
-const MINIO_SERVICE = `  minio:
-    image: minio/minio
-    command: server /data --console-address ":9001"
+const SEAWEEDFS_SERVICE = `  seaweedfs:
+    image: chrislusf/seaweedfs:4.55
+    command: ["mini", "-dir=/data"]
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      AWS_ACCESS_KEY_ID: "\${STORAGE_ACCESS_KEY:-minioadmin}"
+      AWS_SECRET_ACCESS_KEY: "\${STORAGE_SECRET_KEY:-minioadmin}"
+      S3_BUCKET: "\${STORAGE_BUCKET:-headless-lms}"
     ports:
-      - "8006:9000"
-      - "8007:9001"
+      - "8006:8333"
     volumes:
-      - miniodata:/data`;
+      - seaweedfs-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8333/healthz"]
+      interval: 5s
+      timeout: 5s
+      retries: 5`;
 
-const MINIO_ENV = `
+const SEAWEEDFS_ENV = `
 STORAGE_ENDPOINT=localhost
 STORAGE_PORT=8006
 STORAGE_USE_SSL=false
 STORAGE_ACCESS_KEY=minioadmin
 STORAGE_SECRET_KEY=minioadmin
 STORAGE_REGION=us-east-1
-STORAGE_BUCKET={{DB_NAME}}
+STORAGE_BUCKET=headless-lms
 `;
 
 function s3Env(s: Extract<Answers["storage"], { mode: "s3" }>): string {
@@ -131,8 +136,8 @@ export async function scaffold(
         ? `postgres://postgres:postgres@localhost:8005/${name}`
         : answers.db.url;
     const storageEnv =
-      answers.storage.mode === "minio"
-        ? render(MINIO_ENV, { DB_NAME: name })
+      answers.storage.mode === "seaweedfs"
+        ? SEAWEEDFS_ENV
         : answers.storage.mode === "s3"
           ? s3Env(answers.storage)
           : "";
@@ -191,9 +196,9 @@ export async function scaffold(
       services.push(render(POSTGRES_SERVICE, { DB_NAME: name }));
       volumes.push("  pgdata:");
     }
-    if (answers.storage.mode === "minio") {
-      services.push(MINIO_SERVICE);
-      volumes.push("  miniodata:");
+    if (answers.storage.mode === "seaweedfs") {
+      services.push(SEAWEEDFS_SERVICE);
+      volumes.push("  seaweedfs-data:");
     }
     if (services.length > 0) {
       const compose = `name: ${answers.name}\nservices:\n${services.join("\n")}\nvolumes:\n${volumes.join("\n")}\n`;

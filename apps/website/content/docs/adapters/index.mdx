@@ -68,4 +68,4 @@ A deployment adds a notification channel, such as SMS or a chat app, by passing 
 
 Because each slot is just an interface, you can replace any adapter with your own implementation — implement the port from `@headless-lms/core/types` and pass it in the same way.
 
-An installation scaffolded with `npm create headless-lms` comes with one adapter wired: MinIO storage, and only when `STORAGE_ENDPOINT` is set. Every other slot sits on its default, so a fresh project boots against nothing but Postgres. Add the adapters above as you need them — `apps/api` in the repository is the fully wired reference (Resend, MinIO, React Email, Hatchet, Postgres PubSub).
+An installation scaffolded with `npm create headless-lms` wires the S3-compatible storage adapter when `STORAGE_ENDPOINT` is set. The scaffolder bundles SeaweedFS by default, and you can also supply an existing S3 endpoint or skip storage. Add the adapters above as you need them. The reference API in `apps/api` uses Resend, SeaweedFS, React Email, Hatchet and Postgres PubSub.

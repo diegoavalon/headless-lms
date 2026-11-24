@@ -34,20 +34,24 @@ services:
   # S3-compatible object storage for uploads + content (private bucket, served
   # via presigned URLs). Matches the STORAGE_* defaults in .env.example.
   #   API:     http://localhost:8006
-  #   Console: http://localhost:8007  (login minioadmin / minioadmin)
-  minio:
-    image: minio/minio:latest
-    container_name: headless-lms-minio
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.55
+    container_name: headless-lms-seaweedfs
     restart: unless-stopped
-    command: server /data --console-address ":9001"
+    command: ["mini", "-dir=/data"]
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      AWS_ACCESS_KEY_ID: "${STORAGE_ACCESS_KEY:-minioadmin}"
+      AWS_SECRET_ACCESS_KEY: "${STORAGE_SECRET_KEY:-minioadmin}"
+      S3_BUCKET: "${STORAGE_BUCKET:-headless-lms}"
     ports:
-      - "8006:9000"
-      - "8007:9001"
+      - "8006:8333"
     volumes:
-      - minio-data:/data
+      - seaweedfs-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8333/healthz"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # Hatchet Lite — durable execution for the automations engine.
   #   Dashboard: http://localhost:8009  (login admin@example.com / Admin123!!)
@@ -81,5 +85,5 @@ services:
 
 volumes:
   postgres-data:
-  minio-data:
+  seaweedfs-data:
   hatchet-config:
