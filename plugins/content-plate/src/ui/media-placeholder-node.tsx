@@ -338,9 +338,6 @@ function MediaPlaceholderPopover({ children }: { children: ReactNode }) {
             <Button className="w-full" onClick={openFilePicker} variant="brand">
               {currentMedia.buttonText}
             </Button>
-            <div className="mt-3 text-muted-foreground text-xs">
-              The maximum size per file is 5MB
-            </div>
           </TabsContent>
 
           <TabsContent className="w-[300px] px-3 pt-2 pb-3 text-center" value="embed">

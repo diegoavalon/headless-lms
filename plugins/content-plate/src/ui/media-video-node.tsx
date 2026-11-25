@@ -30,6 +30,10 @@ export const MediaVideoElement = withHOC(
     const width = useResizableValue("width");
 
     const isEditorMounted = useEditorMounted();
+    const src = typeof unsafeUrl === "string" ? unsafeUrl.trim() : "";
+    const showYouTube = !isUpload && isYoutube;
+    const showPlayer =
+      isEditorMounted && !showYouTube && Boolean(src) && (isUpload || /^https?:\/\//i.test(src));
 
     const isTweet = true;
 
@@ -61,7 +65,7 @@ export const MediaVideoElement = withHOC(
                 options={{ direction: "right" }}
               />
 
-              {!isUpload && isYoutube && (
+              {showYouTube && (
                 <div ref={handleRef}>
                   <LiteYouTubeEmbed
                     id={embed!.id!}
@@ -87,10 +91,9 @@ export const MediaVideoElement = withHOC(
                 </div>
               )}
 
-              {/* TODO: Lazy load */}
-              {isUpload && isEditorMounted && (
+              {showPlayer && (
                 <div ref={handleRef}>
-                  <ReactPlayer controls height="100%" src={unsafeUrl} width="100%" />
+                  <ReactPlayer controls height="100%" preload="metadata" src={src} width="100%" />
                 </div>
               )}
 
