@@ -69,3 +69,26 @@ Both sources share the registry row, the storage key, the presigned upload, the 
 ## Build state
 
 Built and **persisted**, including both sources, the member upload path, file links on every read that returns a file, the deletion rule and the sweep.
+
+## Proposed feature — Media Library collections
+
+Course authors with Media Library access can upload an organization-wide video once through **Media → Upload** and insert it into courses they can edit through **Video → Library → Browse library**. The library currently offers filename search and a file-type filter. As the catalog grows, authors need a way to group assets by topic or curriculum and find those groups from the activity editor.
+
+### Author workflow
+
+1. In **Media**, create a collection such as **Wrestling Fundamentals**.
+2. Upload a video into the collection or add a video already in the library. The same asset can belong to multiple collections.
+3. In any activity, add a **Video** block and open **Library → Browse library**. Choose a collection, search by filename, and insert the video.
+4. Use the same asset in other activities or courses. Each activity stores the asset ID, and the LMS issues signed playback links after checking learner access.
+
+### Acceptance criteria
+
+- A user with `media:read` can browse collections in the active organization and filter both the Media Library and the activity picker by collection. Filename search, file-type filtering, and pagination work within the selected collection.
+- A user with `media:write` can create, rename, and delete collections and add or remove existing library assets. An author can also select a collection when uploading through **Media**.
+- A collection stores references to existing asset IDs. Adding an asset to a second collection or inserting it into a second activity uses the same stored object.
+- Collection membership grants no asset or course permissions. Deleting a collection removes its membership records. The assets and their references in saved activities remain valid.
+- Existing assets are available under **All media**, including assets with no collection.
+
+### Storage and recovery
+
+Store collection names and memberships in Postgres and serve media through the configured object storage adapter. In the local setup, SeaweedFS holds the primary media. A future offsite backup to a private Backblaze B2 bucket should include both the media objects and a Postgres backup, so a restore can recover the catalog, collection memberships, and course references together.
